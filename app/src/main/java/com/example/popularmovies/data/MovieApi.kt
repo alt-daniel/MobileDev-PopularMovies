@@ -9,7 +9,7 @@ class MovieApi {
 
     companion object {
         //Base url from the api.
-        private const val baseUrl = "https://api.themoviedb.org/3/discover/"
+        private const val baseUrl = "https://api.themoviedb.org/"
 
         /**
          * return [NumbersApiService] - The service class of the retrofit client.
@@ -22,7 +22,8 @@ class MovieApi {
                 .build()
 
             // Create the Retrofit instance
-            val movieApi = Retrofit.Builder().baseUrl(baseUrl)
+            val movieApi = Retrofit.Builder()
+                .baseUrl(baseUrl)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
