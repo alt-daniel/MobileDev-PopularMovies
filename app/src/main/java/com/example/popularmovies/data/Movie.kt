@@ -13,13 +13,13 @@ data class Movie (
     @SerializedName("vote_average") var rating: Double,
     @SerializedName("overview") var overview: String,
     var id: Int
-) : Parcelable {
+)  :Parcelable{
 
-    fun getPosterImageURL() {
-        "https://image.tmdb.org/t/p/w500/$posterImage"
+    fun getPosterImageURL() : String {
+        return "https://image.tmdb.org/t/p/w500/$posterImage"
     }
 
-    fun getBackdropImage() {
-        "https://image.tmdb.org/t/p/w500/$backdropImage"
+    fun getBackdropImageUrl() : String {
+        return "https://image.tmdb.org/t/p/w500/$backdropImage"
     }
 }

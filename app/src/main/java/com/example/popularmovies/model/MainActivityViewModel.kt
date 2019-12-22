@@ -1,7 +1,6 @@
 package com.example.popularmovies.model
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.popularmovies.data.Movie
@@ -19,14 +18,22 @@ class MainActivityViewModel (application: Application) : AndroidViewModel(applic
     val error = MutableLiveData<String>()
 
     fun getMovies(year: String) {
-        moviesRepository.getMovies(year).enqueue(object: Callback<List<Movie>> {
+        moviesRepository.getMovies(year).enqueue(object: Callback<JsonObject> {
 
-            override fun onResponse(call: Call<List<Movie>>, response: Response<List<Movie>>) {
-                if (response.isSuccessful) movies.value = response.body()
-                else error.value = "An error ocurred: ${response.errorBody().toString()}"
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                val results = response.body()?.get("results")
+                // puts the results in an array of type movie
+                val movies = GsonBuilder().create().fromJson(results,Array<Movie>::class.java).toList()
+
+                //sets the ids
+                for ((num, movie) in movies.withIndex()) {
+                    movies[num].id = num+1
+                }
+                if (response.isSuccessful) this@MainActivityViewModel.movies.value = movies
+                else error.value = "An error occured: ${response.errorBody().toString()}"
             }
 
-            override fun onFailure(call: Call<List<Movie>>, t: Throwable) {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 error.value = t.message
             }
 

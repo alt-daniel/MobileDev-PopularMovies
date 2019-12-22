@@ -1,7 +1,5 @@
 package com.example.popularmovies.data
 
-import android.content.res.Resources
-import com.example.popularmovies.R
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.http.GET
@@ -16,5 +14,5 @@ interface MovieApiService {
             "&include_adult=false" +
             "&include_video=false" +
             "&page=1")
-    fun getMovieList(@Query("year") year: String): Call<List<Movie>>
+    fun getMovieList(@Query("year") year: String): Call<JsonObject>
 }

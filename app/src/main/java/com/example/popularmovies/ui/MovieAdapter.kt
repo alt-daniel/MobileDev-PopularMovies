@@ -5,14 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.popularmovies.R
 import com.example.popularmovies.data.Movie
 import kotlinx.android.synthetic.main.item_movie.view.*
 
-class MovieAdapter (private val movies : List<Movie>): RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
+class MovieAdapter (private val movies : List<Movie>, private val onClick: (Movie) -> Unit) : RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
 
     private lateinit var context: Context
+    private var movieNum = 0
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
@@ -32,9 +33,17 @@ class MovieAdapter (private val movies : List<Movie>): RecyclerView.Adapter<Movi
 
     inner class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
 
+        init {
+            itemView.setOnClickListener{
+                onClick(movies[adapterPosition])
+            }
+        }
+
         fun bind(movie: Movie) {
-            itemView.tvRank.text = movie.title
-            Glide.with(context).load(movie.getPosterImageURL()).into(itemView.ivPoster)
+            GlideApp.with(context).load(movie.getPosterImageURL()).into(itemView.ivPoster)
+            itemView.tvRank.text = movie.id.toString() + "."
+            movieNum++
         }
     }
+
 }

@@ -1,5 +1,6 @@
 package com.example.popularmovies.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
@@ -10,13 +11,18 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.popularmovies.R
 import com.example.popularmovies.data.Movie
 import com.example.popularmovies.model.MainActivityViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+
+const val MOVIE = "MOVIE"
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainActivityViewModel
     private val movies = arrayListOf<Movie>()
-    private val movieAdapter = MovieAdapter(movies)
+    private val movieAdapter = MovieAdapter(movies) {
+            movie -> startDetailActivity(movie)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +34,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        btnSubmit.setOnClickListener { getMovies() }
-        rvMovies.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        btnSubmit.setOnClickListener {
+            val year = etYear.text.toString()
+            if (year.toInt() >= 1990 && year.toInt() <= 2022) {
+                viewModel.getMovies(year)
+                println("Test: ${movies.size}")
+            }
+            else Snackbar.make(rvMovies, "Please choose year from 1995 till 2019", Snackbar.LENGTH_LONG).show()
+        }
+        rvMovies.layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
         rvMovies.adapter = movieAdapter
     }
 
@@ -41,11 +54,14 @@ class MainActivity : AppCompatActivity() {
             movieAdapter.notifyDataSetChanged()
         })
     }
-     private fun getMovies() {
-         val year: String = etYear.text.toString()
-         viewModel.getMovies(year)
-         println("Size of the movie list: ${movies.size}")
-     }
+
+    fun startDetailActivity(movie: Movie) {
+        val intent = Intent(this, DetailActivity::class.java)
+        intent.putExtra(MOVIE, movie)
+        startActivity(intent)
+
+    }
+
 
 
 
